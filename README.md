@@ -22,11 +22,12 @@ Dual LP Problem :
 ```
 Code :
 ```
-print(convert_to_dual(
-  [ ["x1",0,"inf"], ["x2",0,"inf"], ["x3",0,"inf"] ],
-  [ [[5,2, 2],"<=",145.0], [[4,8,-8],"<=",260.0], [[1,1,4],"<=",190.0] ],
-  [1,4,2]
-))
+dual = convert_to_dual(
+    [ ["x1",0,"inf"], ["x2",0,"inf"], ["x3",0,"inf"] ],
+    [ [primal_coef_constraints[0],"<=",primal_bounds_constraints[0]], [primal_coef_constraints[1],"<=",primal_bounds_constraints[1]], [primal_coef_constraints[2],"<=",primal_bounds_constraints[2]] ],
+    primal_coef_objective
+)
+print(dual)
 ```
 Output :
 ```
@@ -46,10 +47,8 @@ We check if this solution satisfies the primal constraints:
 ```
 Code :
 ```
-print(is_a_feasable_region(
-    [ 0 , 52.5 , 20 ],
-    [ [[5,2,2],"<=",145.0], [[4,8,-8],"<=",260.0], [[1,1,4],"<=",190.0] ]
-))
+feasable_region = is_a_feasable_region(q, [ [primal_coef_constraints[0],"<=",primal_bounds_constraints[0]], [primal_coef_constraints[1],"<=",primal_bounds_constraints[1]], [primal_coef_constraints[2],"<=",primal_bounds_constraints[2]] ])
+print(feasable_region)
 ```
 Output :
 ```
@@ -80,10 +79,19 @@ y_3=0
 \end{cases}
 \end{align*}
 ```
+Code :
+```
+y = cs(q, primal_bounds_constraints, primal_coef_constraints, primal_coef_objective)
+print(y)
+```
+Output :
+```
+[1.5   0.125 0.   ]
+```
 # 4. Is $Q$ the solution for the primal problem?
 ```math
 \begin{align*}
-& b.Y =
+& Y.b =
 \begin{pmatrix}
 3/2\\
 1/8\\
@@ -93,6 +101,26 @@ y_3=0
 145\\
 260\\
 190
-\end{pmatrix}=3/2*145+1/8*260+0*190=250
+\end{pmatrix}=3/2*145+1/8*260+0*190=250 \\
+& X.c =
+\begin{pmatrix}
+0\\
+52.5\\
+20
+\end{pmatrix}.
+\begin{pmatrix}
+1\\
+4\\
+2
+\end{pmatrix}=0*1+52.5*4+20*2=250
 \end{align*}
+```
+Code :
+```
+the_solution = is_the_solution(y, primal_bounds_constraints, primal_coef_objective, q)
+print(the_solution)
+```
+Output :
+```
+True
 ```
